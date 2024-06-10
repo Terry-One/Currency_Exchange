@@ -1,4 +1,4 @@
-# Currency_Exchange
+# Currency Exchange Dashboard
 
 ## This is the Take-Home Assessment from Henon
 
