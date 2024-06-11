@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.vscode/
+.idea/
+env/
+backend/currency-dashboard/Lib/
+backend/currency-dashboard/Scripts/
+backend/currency-dashboard/Include/
+*.swp
