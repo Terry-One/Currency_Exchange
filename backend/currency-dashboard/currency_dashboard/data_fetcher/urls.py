@@ -4,4 +4,5 @@ from . import views
 urlpatterns = [
     path('fetch-historical/', views.FetchHistoricalDataView.as_view(), name='fetch-historical'),
     path('rates/', views.CurrencyRateListView.as_view(), name='currency-rates-list'),
+    path('get-rates/', views.get_rates, name='get_rates'),
 ]

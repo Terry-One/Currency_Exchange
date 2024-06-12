@@ -7,6 +7,27 @@ from datetime import datetime, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import CurrencyRateSerializer
+from django.http import JsonResponse
+
+
+def get_rates(request):
+    base_currency = request.GET.get('base', 'USD')  # Default to USD if not provided
+    target_currency = request.GET.get('target', 'EUR')  # Default to EUR if not provided
+
+    # Assume CurrencyRate has a method to fetch rates, or you can query the model directly
+    try:
+        rates = CurrencyRate.objects.filter(
+            base_currency=base_currency,
+            target_currency=target_currency
+        ).order_by('-date')  # Assuming you have a date field and you want the most recent first
+        data = [{
+                'base_currency': base_currency,
+                'target_currency': target_currency,
+                "date": rate.date, 
+                 "rate": rate.rate} for rate in rates]  # Adjust as per your model fields
+        return JsonResponse({"data": data}, safe=False)
+    except CurrencyRate.DoesNotExist:
+        return JsonResponse({"error": "No rates found for the selected currencies"}, status=404)
 
 class CurrencyRateListView(APIView):
     def get(self, request):
@@ -40,6 +61,22 @@ class FetchHistoricalDataView(View):
                     )
             current_date += timedelta(days=1)
 
+        # Fetch today's rate separately to ensure it's returned in the response
+        today_rate = CurrencyRate.objects.filter(
+            date=datetime.now().date(),
+            base_currency=base_currency,
+            target_currency=target_currency
+        ).first()
+
+        today_rate_data = {
+            "base_currency": base_currency,
+            "target_currency": target_currency,
+            "date": datetime.now().date().strftime("%Y-%m-%d"),
+            "rate": today_rate.rate if today_rate else "No rate found for today"
+        }
+
         return JsonResponse({"status": "success",
-                             "message": "Data fetched successfully for {} to {}".format(base_currency,target_currency)})
+                             "message": "Data fetched successfully for {} to {}".format(base_currency,target_currency),
+                             "today_rate": today_rate_data
+        })
 
