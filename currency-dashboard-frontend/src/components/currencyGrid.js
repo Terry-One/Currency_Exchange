@@ -53,13 +53,16 @@ function CurrencyGrid({ base, target }) {
     };
 
     return (
-        <div className="ag-theme-quartz" style={{ height: 500, width: '100%' }}>
-            <AgGridReact 
-                columnDefs={columnDefs}
-                rowData={rowData}
-                onGridReady={onGridReady}
-                onFilterChanged={onFilterChanged}
-            />
+        <div className="flex justify-center items-center px-4 py-8 transition-all duration-500">
+            <div className="ag-theme-quartz w-full max-w-screen-md" style={{ height: 500 }}>
+                <AgGridReact 
+                    columnDefs={columnDefs}
+                    rowData={rowData}
+                    onGridReady={onGridReady}
+                    onFilterChanged={onFilterChanged}
+                    suppressHorizontalScroll={true}
+                />
+            </div>
         </div>
     );
 }

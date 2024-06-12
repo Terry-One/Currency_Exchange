@@ -11,8 +11,8 @@ from django.http import JsonResponse
 
 
 def get_rates(request):
-    base_currency = request.GET.get('base', 'USD')  # Default to USD if not provided
-    target_currency = request.GET.get('target', 'EUR')  # Default to EUR if not provided
+    base_currency = request.GET.get('base', 'CAD')  # Default to USD if not provided
+    target_currency = request.GET.get('target', 'USD')  # Default to EUR if not provided
 
     # Assume CurrencyRate has a method to fetch rates, or you can query the model directly
     try:
