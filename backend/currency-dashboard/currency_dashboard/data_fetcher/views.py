@@ -11,20 +11,20 @@ from django.http import JsonResponse
 
 
 def get_rates(request):
-    base_currency = request.GET.get('base', 'CAD')  # Default to USD if not provided
-    target_currency = request.GET.get('target', 'USD')  # Default to EUR if not provided
+    base_currency = request.GET.get('base', 'CAD')
+    target_currency = request.GET.get('target', 'USD')
 
-    # Assume CurrencyRate has a method to fetch rates, or you can query the model directly
+    # fetch rate directly through database
     try:
         rates = CurrencyRate.objects.filter(
             base_currency=base_currency,
             target_currency=target_currency
-        ).order_by('-date')  # Assuming you have a date field and you want the most recent first
+        ).order_by('-date')
         data = [{
                 'base_currency': base_currency,
                 'target_currency': target_currency,
                 "date": rate.date, 
-                 "rate": rate.rate} for rate in rates]  # Adjust as per your model fields
+                 "rate": rate.rate} for rate in rates]
         return JsonResponse({"data": data}, safe=False)
     except CurrencyRate.DoesNotExist:
         return JsonResponse({"error": "No rates found for the selected currencies"}, status=404)
@@ -39,8 +39,8 @@ class CurrencyRateListView(APIView):
 class FetchHistoricalDataView(View):
     def get(self, request):
         # Retrieve currency pairs from the query string
-        base_currency = request.GET.get('base', 'CAD')  # Default to 'CAD' if not provided
-        target_currency = request.GET.get('target', 'USD')  # Default to 'USD' if not provided
+        base_currency = request.GET.get('base', 'CAD')
+        target_currency = request.GET.get('target', 'USD')
 
         start_date = datetime.now() - timedelta(days=730)  # Last two years
         end_date = datetime.now()
@@ -61,7 +61,7 @@ class FetchHistoricalDataView(View):
                     )
             current_date += timedelta(days=1)
 
-        # Fetch today's rate separately to ensure it's returned in the response
+        # Fetch today's rate
         today_rate = CurrencyRate.objects.filter(
             date=datetime.now().date(),
             base_currency=base_currency,

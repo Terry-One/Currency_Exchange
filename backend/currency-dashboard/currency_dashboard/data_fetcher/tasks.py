@@ -5,10 +5,9 @@ from .views import FetchHistoricalDataView
 
 @shared_task
 def fetch_currency_data_for_all_pairs():
-    currency_pairs = [
-        ('CAD', 'USD'), ('USD', 'EUR'), ('EUR', 'CAD'),
-        ('CAD', 'EUR'), ('EUR', 'USD'), ('USD', 'CAD')
-    ]
+    currency_codes = ['USD', 'EUR', 'JPY', 'CAD', 'AUD', 'CNY']
+    currency_pairs = [(base, target) for base in currency_codes for target in currency_codes if base != target]
+
     factory = RequestFactory()
 
     for base, target in currency_pairs:
